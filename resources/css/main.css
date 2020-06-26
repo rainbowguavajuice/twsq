@@ -1,0 +1,50 @@
+body, html {
+    margin: 0;
+    color: #ddd;
+    background-color: #161616;
+    font-family: 'Vollkorn', serif;
+}
+
+header h1 {
+    text-align: center;
+    text-size: 300%;
+}
+
+.main {
+    max-width: 720px;
+    margin: 0 auto;
+}
+
+.timestamp {
+    color: #666;
+    margin-top: 8px;
+    font-size: small;
+}
+
+.entry {
+    padding: 8px 0;
+    margin: 24px 0;
+    border-bottom: 1px solid #222;
+}
+
+.entry-convo .line {
+    vertical-align: baseline;
+}
+.entry-convo .attr {
+    font-weight: bold;
+    text-align: right;
+    vertical-align: baseline;
+    padding-right: 0.5ex;
+}
+
+.entry-quote .line {
+    font-weight: bold;
+    font-style: italic;
+    font-size: 200%;
+}
+
+.entry-quote .attr {
+    font-style: italic;
+    text-align: right;
+    padding-top: 16px;
+}
