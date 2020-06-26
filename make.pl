@@ -55,6 +55,8 @@ opendir (my $dh, $src_dir);
 my @posts = map {
     if (m/^(\d{4}-\d{2}-\d{2})(Q|C)[a-z]*$/) {
 
+	print "processing $_\n";
+	
 	open my $fh, '<:encoding(UTF-8)', "$src_dir/$_";
 	my @args = do { local $/; split "\n", <$fh>, 2; };
 	close $fh;
@@ -85,4 +87,6 @@ my $tail =
     </body>
     </html>';
 
-print join '', $head, @posts, $tail;
+open my $fh, '>', 'index.html';
+print $fh join '', $head, @posts, $tail;
+close $fh
