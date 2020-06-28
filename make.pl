@@ -53,7 +53,7 @@ my $src_dir = 'src';
 opendir (my $dh, $src_dir);
 
 my @posts = map {
-    if (m/^(\d{4}-\d{2}-\d{2})(Q|C)[a-z]*$/) {
+    if (/^(\d{4}-\d{2}-\d{2})[a-z]+(Q|C)$/) {
 
 	print "processing $_\n";
 	
