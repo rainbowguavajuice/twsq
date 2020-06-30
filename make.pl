@@ -4,89 +4,94 @@ use strict;
 use warnings;
 use autodie;
 
-use 5.012;
+use Text::Template;
+use Data::Dumper;
 
-sub fmt_convo {
-    my @lines = split "\n", $_[0];
-    my $ret = "<table>\n";
-    
-    while (@lines) {
-	my $attr = shift @lines;
-	my $line = shift @lines;
-	$ret .=
-	    "<tr>"
-	    ."<td class=\"attr\">$attr</td>"
-	    ."<td class=\"line\">$line</td>"
-	    ."</tr>";
+use constant {
+    TMPL_DIR => 'template',
+    SRC_DIR  => 'src',
+    OUT_DIR  => '.',
+    PML_DIR  => 'permalink',
+    TYPE_CH  => { C => 'convo', P => 'plain', Q => 'quote'},
+};
+
+my ($dh, $fh);
+
+# load templates.
+opendir $dh, TMPL_DIR;
+my %tmpl = map {
+    my $tmpl_path = TMPL_DIR.'/'.$_;
+    if (-f $tmpl_path and /(.+)\.tmpl/) {
+	print "load template $tmpl_path\n";
+	($1, Text::Template->new(SOURCE => $tmpl_path));
     }
-    return $ret . "</table>";
-}
-
-
-sub fmt_quote {
-    my ($attr, $line) = split ":\n", $_[0];
-    return
-	"<div class=\"line\">$line</div>"
-	. "<div class=\"attr\"> &mdash; $attr</div>";
-}
-
-sub fmt_entry {
-    my ($type, $title, $content, $timestamp) = @_;
-
-    my %entry_cl = (Q => 'entry-quote',
-		    C => 'entry-convo');
-    my %fmt_sub  = (Q => \&fmt_quote,
-		    C => \&fmt_convo);
-
-    return
-	"<div class=\"entry $entry_cl{$type}\">"
-	. (($title eq '') ? '' : "<h2>$title</h2>")
-	. $fmt_sub{$type}->($content)
-    	. "<div class=\"timestamp\">$timestamp</div>"
-	. "</div>";
-
-    
-}
-
-
-my $src_dir = 'src';
-opendir (my $dh, $src_dir);
-
-my @posts = map {
-    if (/^(\d{4}-\d{2}-\d{2})[a-z]+(Q|C)$/) {
-
-	print "processing $_\n";
-	
-	open my $fh, '<:encoding(UTF-8)', "$src_dir/$_";
-	my @args = do { local $/; split "\n", <$fh>, 2; };
-	close $fh;
-
-	fmt_entry $2, @args, $1;
-
-    }
-} (reverse sort readdir $dh);
-
+} readdir $dh;
 closedir $dh;
 
-my $head =
-    '<!DOCTYPE html>
-    <html>
-    <meta charset="utf-8">
-    <html lang="en-GB">
-    <head>
-    <link href="https://fonts.googleapis.com/css2?family=Vollkorn&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="resources/css/main.css"> 
-    <title>do not attempt to comb the timey wimey ball</title>
-    </head>
-    <body>
-    <div class="main">
-    <header><h1>twsq.</h1></header>';
 
-my $tail =
-    '</div>
-    </body>
-    </html>';
+# generate sorted list of all source files.
+opendir $dh, SRC_DIR;
+my @src = map {
+    my $src_path = SRC_DIR.'/'.$_;
+    (-f $src_path and /(\d{4}-\d{2}-\d{2})([a-z]+)([CPQ])/)
+	? ([
+	($1 =~ tr/-//rd).$2, # generate alphanumeric id
+	$1,
+	TYPE_CH->{$3},
+	$src_path
+	   ]) : ();
+} reverse sort readdir $dh;
+closedir $dh;
 
-open my $fh, '>', 'index.html';
-print $fh join '', $head, @posts, $tail;
-close $fh
+# format each entry.
+sub fmt_entry {    
+    my ($id, $date, $type, $path) = @_;
+
+    # print "formatting $path\n";
+    
+    open $fh, "<", $path;
+    chomp (my $head = <$fh>);
+    chomp (my $tail = do { local $/; <$fh> });
+    close $fh;
+
+    my $body = $tmpl{$type}->fill_in(
+	STRICT => 1,
+	HASH   => { raw => $tail });
+
+    $tmpl{entry}->fill_in(
+	STRICT => 1,
+	HASH   => {
+	    id    => $id,
+	    type  => $type,
+	    title => $head,
+	    body  => $body,
+	    date  => $date
+	});
+}
+
+# write to index and permalink pages
+my $all_entries = '';
+
+foreach (@src) {
+    my ($id, $date, $type,  $path) = @{$_};
+
+    print "generate page $id\n";
+    
+    my $entry = fmt_entry @{$_};
+    $all_entries .= $entry;
+    
+    open $fh, '>', PML_DIR."/$id.html";
+    $tmpl{index}->fill_in(
+	STRICT => 1,
+	HASH   => { main => $entry },
+	OUTPUT => $fh);
+    close  $fh;
+}
+
+print "generate index\n";
+open $fh, '>', 'index.html';
+$tmpl{index}->fill_in(
+    STRICT => 1,
+    HASH   => { main => $all_entries },
+    OUTPUT => $fh);
+close $fh;
