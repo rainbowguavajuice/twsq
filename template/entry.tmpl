@@ -1,9 +1,13 @@
-<article class="entry-{$type}">{
+<article class="entry entry-{$type}">{
 ($title eq '') ? '' : "<h2>$title</h2>";
 }<div>{$body}</div>
 <footer>
 <time datetime="{$date}">{$date}</time>
+<span class="extra">
+&middot;
 <a href="/permalink/{$id}.html">link</a>
+</span>
 </footer>
-</article>
 <hr>
+</article>
+</a>
