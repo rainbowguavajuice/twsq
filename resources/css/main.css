@@ -3,30 +3,44 @@
 }
 
 body {
-    box-sizing: boder-box;
+    box-sizing: border-box;
     
     margin: 0 auto;
     
     color: #ddd;
     background-color: #161616;
     font-family: 'Vollkorn', serif;
-    
+
+    min-height: 100vh;
     max-width: 600px;
+
+    position: relative;
+    padding-bottom: 2em;
 }
 
 a:link {
     color: #777;
-    text-decoration: none;
+    text-decoration: underline #161616;
+    transition: text-decoration-color 80ms;
 }
 a:hover {
-    text-decoration: underline;
+    text-decoration-color: #777;
 }
 
 header {
     text-align: center;
+    padding: 1em;
 }
-header h1 {
-    color: #ddd;
+header > h1 {
+    margin: 0;
+}
+header > h1 > a:link {
+    color: inherit;
+    text-decoration: inherit;
+    transition: color 80ms;
+}
+header > h1 > a:hover {
+    color: #777;
 }
 
 .entry {
@@ -88,4 +102,10 @@ header h1 {
 body > footer {
     color: #666;
     text-align: center;
+    height: 2em;
+
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
 }
