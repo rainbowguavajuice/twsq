@@ -4,8 +4,8 @@ use strict;
 use warnings;
 use autodie;
 
+use Getopt::Long;
 use Text::Template;
-use Data::Dumper;
 
 use constant {
     TMPL_DIR => 'template',
@@ -14,6 +14,10 @@ use constant {
     PML_DIR  => 'permalink',
     TYPE_CH  => { C => 'convo', P => 'plain', Q => 'quote'},
 };
+
+# options
+my $BASE_URL = '/';
+GetOptions('gh-pages' => sub { $BASE_URL = '/twsq/'; });
 
 my ($dh, $fh);
 
@@ -48,7 +52,7 @@ sub fmt_entry {
     my ($id, $date, $type, $path) = @_;
 
     # print "formatting $path\n";
-    
+
     open $fh, "<", $path;
     chomp (my $head = <$fh>);
     chomp (my $tail = do { local $/; <$fh> });
@@ -69,23 +73,23 @@ sub fmt_entry {
 	});
 }
 
-# write to index and permalink pages
+# write to index and to permalink pages
 my $all_entries = '';
 
 foreach (@src) {
     my ($id, $date, $type,  $path) = @{$_};
 
     print "generate page $id\n";
-    
+
     my $entry = fmt_entry @{$_};
     $all_entries .= $entry;
-    
+
     open $fh, '>', PML_DIR."/$id.html";
     $tmpl{index}->fill_in(
 	OUTPUT => $fh,
 	STRICT => 1,
 	HASH   => {
-	    meta => '<base href="/twsq/">',
+	    meta => "<base href=\"$BASE_URL\">",
 	    main => $entry
 	});
     close  $fh;
@@ -96,7 +100,7 @@ open $fh, '>', 'index.html';
 $tmpl{index}->fill_in(
     STRICT => 1,
     HASH   => {
-	meta => '<base href="/twsq/">',
+	meta => "<base href=\"$BASE_URL\">",
 	main => $all_entries
     },
     OUTPUT => $fh);
