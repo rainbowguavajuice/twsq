@@ -46,6 +46,9 @@ header > h1 > a:link {
 header > h1 > a:link {
     color: inherit;
 }
+header > h1 > a:visited {
+    color: inherit;
+}
 
 .entry {
     padding: 8px 0;
