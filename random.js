@@ -3,6 +3,7 @@ const paths = [
 'permalink/20200719a.html',
 'permalink/20200718a.html',
 'permalink/20200716a.html',
+'permalink/20200714b.html',
 'permalink/20200714a.html',
 'permalink/20200712a.html',
 'permalink/20200630a.html',
