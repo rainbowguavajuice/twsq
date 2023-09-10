@@ -85,7 +85,7 @@ foreach (@src) {
 	OUTPUT => $fh,
 	STRICT => 1,
 	HASH   => {
-	    meta => '',
+	    meta => '<base href="/twsq/">',
 	    main => $entry
 	});
     close  $fh;
@@ -96,7 +96,7 @@ open $fh, '>', 'index.html';
 $tmpl{index}->fill_in(
     STRICT => 1,
     HASH   => {
-	meta => '',
+	meta => '<base href="/twsq/">',
 	main => $all_entries
     },
     OUTPUT => $fh);
