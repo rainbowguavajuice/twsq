@@ -1,5 +1,6 @@
 function random_entry() {
 const paths = [
+'permalink/20200716a.html',
 'permalink/20200714a.html',
 'permalink/20200712a.html',
 'permalink/20200630a.html',
