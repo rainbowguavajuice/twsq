@@ -167,3 +167,13 @@ $tmpl{index}->fill_in(
     HASH   => {	meta => $all_meta, main => $all_text },
     OUTPUT => $fh);
 close $fh;
+
+# generate javascript
+print "generate script(s)\n";
+open $fh, '>', 'random.js';
+my @paths = map { PML_DIR.($_->[0]).'.html' } @src;
+$tmpl{random}->fill_in(
+    STRICT => 1,
+    HASH   => {	paths => \@paths },
+    OUTPUT => $fh);
+close $fh;

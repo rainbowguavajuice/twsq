@@ -1,0 +1,5 @@
+function random_entry() \{
+const paths = [
+{foreach (@paths) { $OUT .= "'$_',\n"; }}];
+window.location = paths[Math.floor(Math.random()*paths.length)];
+\}
