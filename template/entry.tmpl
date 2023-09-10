@@ -1,0 +1,9 @@
+<article class="entry-{$type}">{
+($title eq '') ? '' : "<h2>$title</h2>";
+}<div>{$body}</div>
+<footer>
+<time datetime="{$date}">{$date}</time>
+<a href="/permalink/{$id}.html">link</a>
+</footer>
+</article>
+<hr>
