@@ -24,7 +24,7 @@ my $BASE = '/';
 
 GetOptions(
     'base=s'   => \$BASE,
-    'gh-pages' => sub { $BASE = 'https://larkiiiine.github.io/twsq/'; });
+    'gh-pages' => sub { $BASE = 'https://rainbowguavajuice.github.io/twsq/'; });
 
 my ($dh, $fh);
 
