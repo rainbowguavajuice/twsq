@@ -98,6 +98,8 @@ article:hover .extra, header:hover .extra {
     display: table-cell;
     vertical-align: baseline;
 
+    white-space: nowrap;
+
     text-align: right;
     font-weight: bold;
 }
