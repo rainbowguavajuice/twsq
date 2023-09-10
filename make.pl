@@ -24,7 +24,7 @@ my $BASE = '/';
 
 GetOptions(
     'base=s'   => \$BASE,
-    'gh-pages' => sub { $BASE = 'https://larkiine.github.io/twsq/'; });
+    'gh-pages' => sub { $BASE = 'https://larkiiiine.github.io/twsq/'; });
 
 my ($dh, $fh);
 
@@ -34,8 +34,8 @@ my %tmpl = map {
     my $tmpl_path = TMPL_DIR.$_;
     if (-f $tmpl_path and /(.+)\.tmpl/) {
 	print "load template $tmpl_path\n";
-	($1, Text::Template->new(SOURCE => $tmpl_path));
-    }
+	("$1", Text::Template->new(SOURCE => $tmpl_path));
+    } else { (); }
 } readdir $dh;
 closedir $dh;
 
@@ -103,7 +103,6 @@ sub fmt_page {
     open $fh, '<', $path;
     my $body = do { local $/; <$fh> };
     close $fh;
-
     (
      $tmpl{meta}->fill_in(
     	 STRICT => 1,
