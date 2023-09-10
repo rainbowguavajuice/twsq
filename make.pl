@@ -6,11 +6,12 @@ use autodie;
 
 use Getopt::Long;
 use Text::Template;
+use Data::Dumper;
 
 use constant {
     TMPL_DIR => 'template/',
+    PAGES    => 'pages/',
     SRC_DIR  => 'src/',
-    OUT_DIR  => '.',
     PML_DIR  => 'permalink/',
     TYPE_CH  => { C => 'convo', P => 'plain', Q => 'quote'},
 };
@@ -38,7 +39,6 @@ my %tmpl = map {
 } readdir $dh;
 closedir $dh;
 
-
 # generate sorted list of all source files.
 opendir $dh, SRC_DIR;
 my @src = map {
@@ -53,13 +53,18 @@ my @src = map {
 } reverse sort readdir $dh;
 closedir $dh;
 
+# generate list of info pages
+opendir $dh, PAGES;
+my @pages = map { (-f PAGES.$_ and /(.+)\.html/) ? ($1) : () } readdir $dh;
+closedir $dh;
+
 # formats a single entry. returns a pair of strings ($meta, $text).
 sub fmt_entry {    
     my ($id, $date, $type, $path) = @_;
 
     # print "formatting $path\n";
 
-    open $fh, "<", $path;
+    open $fh, '<', $path;
     chomp (my $head = <$fh>);
     chomp (my $tail = do { local $/; <$fh> });
     close $fh;
@@ -72,11 +77,11 @@ sub fmt_entry {
      $tmpl{meta}->fill_in(
 	 STRICT => 1,
 	 HASH   => {
-	     base   => $BASE,
-	     title  => ($head eq '') ? 'twsq.' : "twsq: $head",
-	     url    => $BASE.PML_DIR.$id.'.html',
-	     desc   => $tail,
-	     date   => $date
+	     base  => $BASE,
+	     title => ($head eq '') ? 'twsq.' : "twsq: $head",
+	     url   => $BASE.PML_DIR.$id.'.html',
+	     desc  => $tail,
+	     date  => $date
 	 }),
      $tmpl{entry}->fill_in(
 	 STRICT => 1,
@@ -90,7 +95,41 @@ sub fmt_entry {
     );
 }
 
-# write to index and to permalink pages
+# format a single own page, returns ($meta, $text)
+sub fmt_page {
+    my ($name) = @_;
+    my $path   = PAGES.$name.'.html';
+
+    open $fh, '<', $path;
+    my $body = do { local $/; <$fh> };
+    close $fh;
+
+    (
+     $tmpl{meta}->fill_in(
+    	 STRICT => 1,
+    	 HASH   => {
+    	     base  => $BASE,
+    	     title => "twsq: $name",
+    	     url   => $BASE.$name.'.html',
+    	     desc  => "$name page for twsq.",
+    	     date  => '2020'
+    	 }),
+     $body
+    );
+}
+
+# write to info pages
+foreach (@pages) {
+    my ($m, $t) = fmt_page $_;
+    open $fh, '>', "$_.html";
+    $tmpl{index}->fill_in(
+	STRICT => 1,
+	HASH   => { meta => $m, main => $t },
+	OUTPUT => $fh);
+    close $fh;
+}
+
+# write to permalink pages
 my $all_text = '';
 
 foreach (@src) {
@@ -103,15 +142,13 @@ foreach (@src) {
 
     open $fh, '>', PML_DIR.$id.'.html';
     $tmpl{index}->fill_in(
-	OUTPUT => $fh,
 	STRICT => 1,
-	HASH   => {
-	    meta => $meta,
-	    main => $text
-	});
+	HASH   => { meta => $meta, main => $text },
+	OUTPUT => $fh);
     close  $fh;
 }
 
+# write to index page
 print "generate index\n";
 
 my $all_meta = $tmpl{meta}->fill_in(
@@ -127,9 +164,6 @@ my $all_meta = $tmpl{meta}->fill_in(
 open $fh, '>', 'index.html';
 $tmpl{index}->fill_in(
     STRICT => 1,
-    HASH   => {
-	meta => $all_meta,
-	main => $all_text,
-    },
+    HASH   => {	meta => $all_meta, main => $all_text },
     OUTPUT => $fh);
 close $fh;
