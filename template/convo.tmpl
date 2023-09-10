@@ -1,0 +1,7 @@
+{
+while ($raw =~ /^(.*):\n(.*)$/mg) {
+  $OUT .= "\n<div class=\"row\">" .
+       	  "<span class=\"attr\">$1:</span>" .
+       	  "<span class=\"line\"> $2</span></div>";
+}
+}

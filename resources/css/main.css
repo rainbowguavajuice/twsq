@@ -1,50 +1,111 @@
-body, html {
-    margin: 0;
+*, *:before, *:after {
+    box-sizing: inherit;
+}
+
+body {
+    box-sizing: border-box;
+    
+    margin: 0 auto;
+    
     color: #ddd;
     background-color: #161616;
     font-family: 'Vollkorn', serif;
-}
 
-header h1 {
-    text-align: center;
-    text-size: 300%;
-}
-
-.main {
+    min-height: 100vh;
     max-width: 600px;
-    margin: 0 auto;
+
+    position: relative;
+    padding-bottom: 2em;
 }
 
-.timestamp {
-    color: #666;
-    margin-top: 8px;
-    font-size: small;
+a:link {
+    color: #777;
+    text-decoration: underline #161616;
+    transition: text-decoration-color 80ms;
+}
+a:hover {
+    text-decoration-color: #777;
+}
+
+header {
+    text-align: center;
+    padding: 1em;
+}
+header > h1 {
+    margin: 0;
+}
+header > h1 > a:link {
+    color: inherit;
+    text-decoration: inherit;
+    transition: color 80ms;
+}
+header > h1 > a:hover {
+    color: #777;
 }
 
 .entry {
     padding: 8px 0;
-    margin: 24px 0;
-    border-bottom: 1px solid #222;
+    margin: 8px 0;
 }
 
+.entry > footer {
+    color: #777;
+    font-size: small;
+    
+    padding-top: 8px;
+}
+.entry .extra {
+    visibility: hidden;
+}
+.entry:hover .extra {
+    visibility: visible;
+}
+
+.entry > hr {
+    border: none;
+    background-color: #333;
+    height: 2px;
+}
+
+.entry-convo .row {
+    display: table-row;
+}
 .entry-convo .line {
+    display: table-cell;
     vertical-align: baseline;
+
+    padding-left: 1ex;
 }
 .entry-convo .attr {
-    font-weight: bold;
-    text-align: right;
+    display: table-cell;
     vertical-align: baseline;
-    padding-right: 0.5ex;
+
+    text-align: right;
+    font-weight: bold;
 }
 
 .entry-quote .line {
+    display: block;
+    
+    font-size: 200%;
     font-weight: bold;
     font-style: italic;
-    font-size: 200%;
+}
+.entry-quote .attr {
+    display: block;
+    
+    text-align: right;
+    font-style: italic;
+    padding-top: 1em;
 }
 
-.entry-quote .attr {
-    font-style: italic;
-    text-align: right;
-    padding-top: 16px;
+body > footer {
+    color: #666;
+    text-align: center;
+    height: 2em;
+
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
 }
