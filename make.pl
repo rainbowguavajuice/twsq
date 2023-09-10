@@ -43,7 +43,7 @@ my @src = map {
 } reverse sort readdir $dh;
 closedir $dh;
 
-# format each entry.
+# formats a single entry.
 sub fmt_entry {    
     my ($id, $date, $type, $path) = @_;
 
@@ -82,9 +82,12 @@ foreach (@src) {
     
     open $fh, '>', PML_DIR."/$id.html";
     $tmpl{index}->fill_in(
+	OUTPUT => $fh,
 	STRICT => 1,
-	HASH   => { main => $entry },
-	OUTPUT => $fh);
+	HASH   => {
+	    meta => '',
+	    main => $entry
+	});
     close  $fh;
 }
 
@@ -92,6 +95,9 @@ print "generate index\n";
 open $fh, '>', 'index.html';
 $tmpl{index}->fill_in(
     STRICT => 1,
-    HASH   => { main => $all_entries },
+    HASH   => {
+	meta => '',
+	main => $all_entries
+    },
     OUTPUT => $fh);
 close $fh;
