@@ -1,5 +1,6 @@
 function random_entry() {
 const paths = [
+'permalink/20230905a.html',
 'permalink/20230825a.html',
 'permalink/20230612a.html',
 'permalink/20230604a.html',
@@ -11,6 +12,7 @@ const paths = [
 'permalink/20221205a.html',
 'permalink/20221204a.html',
 'permalink/20221115a.html',
+'permalink/20211228a.html',
 'permalink/20200929a.html',
 'permalink/20200914a.html',
 'permalink/20200903b.html',
@@ -19,7 +21,6 @@ const paths = [
 'permalink/20200718a.html',
 'permalink/20200716a.html',
 'permalink/20200714b.html',
-'permalink/20200714a.html',
 'permalink/20200712a.html',
 'permalink/20200630a.html',
 'permalink/20200623a.html',
@@ -39,7 +40,6 @@ const paths = [
 'permalink/20181014a.html',
 'permalink/20180827a.html',
 'permalink/20180811a.html',
-'permalink/20180805a.html',
 'permalink/20180722a.html',
 'permalink/20180628a.html',
 'permalink/20180626a.html',
